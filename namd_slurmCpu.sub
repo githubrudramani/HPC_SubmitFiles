@@ -1,0 +1,27 @@
+#!/bin/bash
+#SBATCH --qos pq_chapagap_temp
+#SBATCH --account=iacc_chapagap_temp
+#SBATCH --partition investor
+
+# Number of tasks
+#SBATCH -n 16
+
+#SBATCH --output=log1
+
+##########################################################
+# Setup envrionmental variable. 
+##########################################################
+export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
+. /home/share/Modules/4.1.3/init/profile.sh
+module load namd/2.13
+pwd; hostname; date
+ 
+echo "Running program on $SLURM_CPUS_ON_NODE CPU cores"
+
+##########################################################
+##########################################################
+
+#cd /scratch/pbara006/nai107-poly/Four/charmm-gui-7409964923/namd
+perl screenig1.pl
+date
+

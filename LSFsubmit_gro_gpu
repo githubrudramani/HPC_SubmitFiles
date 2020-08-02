@@ -1,0 +1,38 @@
+#!/bin/bash
+#BSUB -a openmpi
+#BSUB -q PQ_chapagain_gpu
+#BSUB -m "GPU_PREM"
+#BSUB -J "Gromacs"
+#BSUB -n 16
+#BSUB -oo "grotest2.out"
+#BSUB -eo "grotest2.err"
+#BSUB -R "span[hosts=1]"
+# Count the number of words in the LSB_HOSTS variable
+# This give the number of processes requested
+. $MODULESHOME/../global/profile.modules
+module load gromacs/5.1.1-gpu
+
+export NPROCS=`echo $LSB_HOSTS | wc -w`
+
+#step0 minimization
+#/home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi grompp -f minimization.mdp -o minimization.tpr -c insane.gro -p system.top -n index.ndx
+#mpirun -np 4  /home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi mdrun -deffnm minimization
+#step1#
+
+#/home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi grompp -f step6.6_equilibration.mdp -o step6.6_equilibration.tpr -c step6.5_equilibration.gro  -p system.top -n index.ndx -maxwarn 2
+#mpirun -np 4 /home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi mdrun -deffnm step6.6_equilibration
+
+#step2#
+
+#for i in 1 2 3 4 5 6
+#do
+ #   let j=$i-1        
+  #  /home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi grompp -f step6.${i}_equilibration.mdp -o step6.${i}_equilibration.tpr -c step6.${j}_equilibration.gro -p system.top -n index.ndx
+   # mpirun -np 4 /home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi mdrun -deffnm step6.${i}_equilibration
+# done
+
+#step3#
+
+/home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi grompp -f step7.2_production.mdp -o step7.2_production.tpr -c step7.1_production.gro -p system.top -n index.ndx 
+mpirun -np 4 /home/applications/gromacs/5.1.1/gpu/bin/gmx_mpi mdrun -deffnm step7.2_production
+

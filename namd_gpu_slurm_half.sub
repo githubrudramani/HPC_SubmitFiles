@@ -1,0 +1,36 @@
+#!/bin/bash
+#SBATCH --qos pq_chapagap
+#SBATCH --account=iacc_chapagap
+#SBATCH --partition GPU_chapagap
+
+# Number of nodes
+#SBATCH -N 1
+
+# Number of tasks
+#SBATCH -n 17
+#SBATCH --mem 47546
+# Number of GPUs per node
+#SBATCH --gres=gpu:1
+
+# Specify server to run this job on
+#SBATCH -w g012
+
+#SBATCH --output=log2
+
+##########################################################
+# Setup envrionmental variable. 
+##########################################################
+export OMP_NUM_THREADS=$SLURM_CPUS_ON_NODE
+. /home/share/Modules/4.1.3/init/profile.sh
+module load namd/2.13
+pwd; hostname; date
+ 
+echo "Running program on $SLURM_CPUS_ON_NODE CPU cores"
+
+##########################################################
+##########################################################
+
+#cd /scratch/pbara006/nai107-poly/Four/charmm-gui-7409964923/namd
+charmrun  ++ppn $OMP_NUM_THREADS ++p $OMP_NUM_THREADS `which namd2` +idlepoll +ignoresharing  step7_production-ext2.inp > step7_production-ext2.log
+date
+
